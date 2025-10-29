@@ -1,6 +1,22 @@
 version: "3"
 
 services:
+  
+  web:
+    build: .
+    container_name: tixxety_api
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=tixxety_db
+      - DB_USER=user
+      - DB_PASS=password
+      - DATABASE_URL=postgresql://user:password@db:5432/tixxety_db
+    depends_on:
+      - db
 
   db:
     image: postgres:15
@@ -31,18 +47,6 @@ services:
       - db
 
 
-  redis:
-    image: redis:7
-    container_name: tixxety_redis
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-
-
-
 volumes:
   pgdata:
   pgadmin_data:
-  redis_data:

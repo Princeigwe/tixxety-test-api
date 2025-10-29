@@ -9,8 +9,11 @@ from database_config import get_db
 
 from modules.auth.auth_routers import router as auth_router
 from modules.events import event_routers
-from modules.tickets import ticket_router
+from modules.tickets import ticket_routers, ticket_services
 
+
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
 
 app = FastAPI(
   title="Tixxety",
@@ -41,6 +44,16 @@ Base.metadata.create_all(engine)
 
 app.include_router(auth_router)
 app.include_router(event_routers.router)
-app.include_router(ticket_router.router)
+app.include_router(ticket_routers.router)
 
 
+# cron job operation to run background task to expire unpaid tickets at 1-minute intervals
+scheduler = BackgroundScheduler()
+scheduler.add_job(ticket_services.expire_unpaid_tickets, 'interval', minutes=1) 
+scheduler.start()
+
+
+@atexit.register
+def shutdown_background_services():
+  print("Shutting down background services")
+  scheduler.shutdown() 

@@ -1,8 +1,8 @@
 from datetime import date
 from fastapi import Depends, HTTPException, status
-from database_config import get_db
+from database_config import get_db, SessionLocal
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import DatabaseError
+from datetime import datetime, timedelta
 
 from utils.jwt_encode_decode import decode_access_token
 
@@ -71,6 +71,22 @@ async def pay_for_ticket(token: str, ticket_id: str, db: Session = Depends(get_d
     db.commit()
     db.refresh(ticket)
     return ticket
+  except Exception as e:
+    if isinstance(e, HTTPException):
+      raise e
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+def expire_unpaid_tickets():
+  try:
+    print("Running expire_unpaid_tickets task...")
+    db = SessionLocal()
+    cutoff_time = datetime.now() - timedelta(minutes=2) # setting cutoff time for unpaid tickets to 2 minutes ago
+    unpaid_tickets = db.query(Ticket).filter(Ticket.status == TicketStatusEnum.RESERVED, Ticket.created_at < cutoff_time).all()
+    for ticket in unpaid_tickets:
+      ticket.status = TicketStatusEnum.EXPIRED
+    db.commit()
+    print(f"Expired {len(unpaid_tickets)} unpaid tickets.")
   except Exception as e:
     if isinstance(e, HTTPException):
       raise e

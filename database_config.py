@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 Base = declarative_base()
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
+DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./test.db")
 
 engine = create_engine(DATABASE_URL)
 
