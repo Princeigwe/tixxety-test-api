@@ -44,4 +44,15 @@ async def reserve_ticket(token: str, event_dto: ReserveTicketDTO, db: Session = 
     if isinstance(e, HTTPException):
       raise e
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-    
+
+
+async def get_user_tickets(token: str, db: Session = Depends(get_db)) -> list[Ticket]:
+  try:
+    decoded_token = await decode_access_token(token)
+    user = await user_services.get_user_by_email(decoded_token['email'], db)
+    tickets = db.query(Ticket).filter(Ticket.user_id == user.id).all()
+    return tickets
+  except Exception as e:
+    if isinstance(e, HTTPException):
+      raise e
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

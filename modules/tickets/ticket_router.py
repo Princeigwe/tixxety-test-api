@@ -12,4 +12,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 @router.post("/")
 async def reserve_ticket(event_dto: ReserveTicketDTO, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    return await ticket_services.reserve_ticket(token, event_dto, db)
+  return await ticket_services.reserve_ticket(token, event_dto, db)
+
+@router.get("/mine")
+async def get_user_tickets(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+  return await ticket_services.get_user_tickets(token, db)
