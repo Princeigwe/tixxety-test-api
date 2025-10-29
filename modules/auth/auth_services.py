@@ -22,7 +22,7 @@ async def authenticate_user(email: str, password: str, db: Session = Depends(get
   user =  await user_services.get_user_by_email(email, db)
   if not user or not cipher.verify(password, user.password):
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
-  token = await create_access_token({"user_id": str(user.id), "email": user.email, "name": user.name})
+  token = await create_access_token({"sub": str(user.id), "email": user.email, "name": user.name})
   return{
     "user": user,
     "access_token": token, 

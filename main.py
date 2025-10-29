@@ -9,6 +9,7 @@ from database_config import get_db
 
 from modules.auth.auth_routers import router as auth_router
 from modules.events import event_routers
+from modules.tickets import ticket_router
 
 
 app = FastAPI(
@@ -40,6 +41,6 @@ Base.metadata.create_all(engine)
 
 app.include_router(auth_router)
 app.include_router(event_routers.router)
-
+app.include_router(ticket_router.router)
 
 

@@ -19,7 +19,10 @@ async def create_event(event_dto: CreateEventDTO, db: Session = Depends(get_db))
       description=event_dto.description,
       start_date=event_dto.start_date,
       end_date=event_dto.end_date,
-      venue=event_dto.venue,
+      street=event_dto.street,
+      city=event_dto.city,
+      state=event_dto.state,
+      country=event_dto.country,
       total_tickets=event_dto.total_tickets
     )
     db.add(new_event)
@@ -29,8 +32,7 @@ async def create_event(event_dto: CreateEventDTO, db: Session = Depends(get_db))
   except Exception as e:
     if isinstance(e, HTTPException):
       raise e
-    elif isinstance(e, DatabaseError):
-      raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
 async def get_events(db: Session = Depends(get_db)) -> list[Event]:
@@ -39,3 +41,24 @@ async def get_events(db: Session = Depends(get_db)) -> list[Event]:
     return events
   except Exception as e:
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+async def get_event_by_id(event_id: int, db: Session = Depends(get_db)) -> Event:
+  try:
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if not event:
+      raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
+    return event
+  except Exception as e:
+    if isinstance(e, HTTPException):
+      raise e
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+async def update_event_tickets_sold_count(event_id: str, db: Session = Depends(get_db)):
+  try:
+    event = await get_event_by_id(event_id, db)
+    event.tickets_sold += 1
+    db.commit()
+  except DatabaseError as e:
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to update tickets sold")
