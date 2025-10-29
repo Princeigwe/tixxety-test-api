@@ -31,3 +31,11 @@ async def create_event(event_dto: CreateEventDTO, db: Session = Depends(get_db))
       raise e
     elif isinstance(e, DatabaseError):
       raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+async def get_events(db: Session = Depends(get_db)) -> list[Event]:
+  try:
+    events = db.query(Event).all()
+    return events
+  except Exception as e:
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

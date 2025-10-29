@@ -13,3 +13,6 @@ router = APIRouter(prefix="/events", tags=["Events"])
 async def create_event(event_dto: CreateEventDTO, db: Session = Depends(get_db)):
   return await event_services.create_event(event_dto, db)
 
+@router.get("/")
+async def get_events(db: Session = Depends(get_db)):
+  return await event_services.get_events(db)
