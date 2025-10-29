@@ -5,9 +5,9 @@ from database_config import DATABASE_URL, Base
 
 load_dotenv(override=True)
 
-
-from modules.users import user_entity
-from modules.events import event_entity
+from modules.tickets.ticket_entity import Ticket
+from modules.events.event_entity import Event
+from modules.users.user_entity import User
 
 
 from logging.config import fileConfig
