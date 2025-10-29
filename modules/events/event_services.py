@@ -3,8 +3,12 @@ from database_config import get_db
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import DatabaseError
 
+from utils.jwt_encode_decode import decode_access_token
+
 from .dtos.create_event_dto import CreateEventDTO
 from .event_entity import Event
+
+from modules.users import user_services
 
 
 
@@ -62,3 +66,16 @@ async def update_event_tickets_sold_count(event_id: str, db: Session = Depends(g
     db.commit()
   except DatabaseError as e:
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to update tickets sold")
+
+
+async def get_events_for_you(token: str, db: Session = Depends(get_db)) -> list[Event]:
+  try:
+    decoded_token = await decode_access_token(token)
+    user = await user_services.get_user_by_email(decoded_token['email'], db)
+    events = db.query(Event).filter(
+      Event.city == user.city, 
+      Event.state == user.state, 
+      Event.country == user.country).all()
+    return events
+  except Exception as e:
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
