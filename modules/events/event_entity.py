@@ -1,9 +1,9 @@
 from database_config import Base
 import uuid
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime
+from datetime import date, datetime
 
 
 class Event(Base):
@@ -12,8 +12,8 @@ class Event(Base):
   id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
   title: Mapped[str] = mapped_column(String(200))
   description: Mapped[str] = mapped_column(String(1000))
-  start_date: Mapped[datetime] = mapped_column(DateTime)
-  end_date: Mapped[datetime] = mapped_column(DateTime)
+  start_date: Mapped[date] = mapped_column(Date)
+  end_date: Mapped[date] = mapped_column(Date)
   venue: Mapped[str] = mapped_column(String(300))
   total_tickets: Mapped[int] = mapped_column()
   tickets_sold: Mapped[int] = mapped_column(default=0)
