@@ -8,6 +8,7 @@ from utils.jwt_encode_decode import decode_access_token
 
 from .ticket_entity import Ticket 
 from .dtos.reserve_ticket_dto import ReserveTicketDTO
+from .ticket_status_enum import TicketStatusEnum
 
 from modules.users.user_entity import User
 from modules.events import event_services
@@ -52,6 +53,24 @@ async def get_user_tickets(token: str, db: Session = Depends(get_db)) -> list[Ti
     user = await user_services.get_user_by_email(decoded_token['email'], db)
     tickets = db.query(Ticket).filter(Ticket.user_id == user.id).all()
     return tickets
+  except Exception as e:
+    if isinstance(e, HTTPException):
+      raise e
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+async def pay_for_ticket(token: str, ticket_id: str, db: Session = Depends(get_db)) -> Ticket:
+  try:
+    decoded_token = await decode_access_token(token)
+    user = await user_services.get_user_by_email(decoded_token['email'], db)
+
+    ticket = db.query(Ticket).filter(Ticket.id == ticket_id, Ticket.user_id == user.id).first()
+    if not ticket:
+      raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ticket not found")
+    ticket.status = TicketStatusEnum.PAID
+    db.commit()
+    db.refresh(ticket)
+    return ticket
   except Exception as e:
     if isinstance(e, HTTPException):
       raise e

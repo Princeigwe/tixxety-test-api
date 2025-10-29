@@ -17,3 +17,7 @@ async def reserve_ticket(event_dto: ReserveTicketDTO, token: str = Depends(oauth
 @router.get("/mine")
 async def get_user_tickets(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
   return await ticket_services.get_user_tickets(token, db)
+
+@router.post("/{ticket_id}/pay")
+async def pay_for_ticket(ticket_id: str, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+  return await ticket_services.pay_for_ticket(token, ticket_id, db)
