@@ -16,7 +16,11 @@ async def create_user(user_dto: CreateUserDTO, db: Session = Depends(get_db)) ->
     new_user = User(
       name=user_dto.name,
       email=user_dto.email,
-      password=user_dto.password 
+      password=user_dto.password ,
+      street=user_dto.street,
+      city=user_dto.city,
+      state=user_dto.state,
+      country=user_dto.country
     )
     db.add(new_user)
     db.commit()

@@ -14,6 +14,10 @@ class User(Base):
   name: Mapped[str] = mapped_column(String(100))
   email: Mapped[str] = mapped_column(String(150), unique=True)
   password: Mapped[str] = mapped_column(String(255))
+  street: Mapped[str] = mapped_column(String(300), nullable=True)
+  city: Mapped[str] = mapped_column(String(100), nullable=True)
+  state: Mapped[str] = mapped_column(String(100), nullable=True)
+  country: Mapped[str] = mapped_column(String(100), nullable=True)
   created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
 
   tickets: Mapped[list["Ticket"]] = relationship(back_populates="user")
