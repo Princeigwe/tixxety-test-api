@@ -6,6 +6,9 @@ from database_config import DATABASE_URL, Base
 load_dotenv(override=True)
 
 
+from users import user_entity
+
+
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
