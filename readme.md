@@ -5,7 +5,7 @@ Tixxety is a robust and scalable ticketing API built with FastAPI, designed to m
 ## Features
 
 *   **User Authentication**: Secure user registration and login.
-*   **Event Management**: Create, view, update, and delete event listings.
+*   **Event Management**: Create and view listings.
 *   **Ticket Reservation**: Reserve tickets for events, with checks for availability.
 *   **Background Tasks**: Automated background job to expire unpaid/unconfirmed tickets using `APScheduler`.
 *   **Database**: PostgreSQL for reliable data storage.
