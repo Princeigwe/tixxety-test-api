@@ -39,7 +39,6 @@ Follow these instructions to get a copy of the project up and running on your lo
     git clone <tixxety-test-api_url>
     cd tixxety-test-api
     ```
-    *(Replace `<YOUR_REPOSITORY_URL>` with the actual URL of your Git repository)*
 
 2.  **Create a `.env` file:**
     Create a file named `.env` in the root directory of the project. This file will hold your environment variables.
@@ -50,7 +49,7 @@ Follow these instructions to get a copy of the project up and running on your lo
     POSTGRES_PASSWORD=password
     POSTGRES_DB=tixxety_db
     ```
-    *Note: The `user`, `password`, and `tixxety_db` values should match those defined in your `compose.yml` for the `db` service. You can customize these if needed, but ensure they are consistent across `.env` and `compose.yml`.*
+
 
 3.  **Build and run the services:**
     Use Docker Compose to build the images and start all the services (web API, PostgreSQL database, and PGAdmin).
@@ -114,6 +113,10 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(ticket_services.expire_unpaid_tickets, 'interval', minutes=1) 
 scheduler.start()
 ```
+
+## Note
+During user authentication, the request body should be of type `form-data` instead of `json`, with the fields `username` and `password` to represent the user's email and password, respectively.
+
 
 ## Contact
 
