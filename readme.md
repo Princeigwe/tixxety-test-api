@@ -101,7 +101,7 @@ The project is organized into modules, each handling a specific domain:
 ## Assumption
 One of the tasks brought up was to utilize Celery to mark reserved tickets as expired after 2 minutes if not paid for. I believe the goal of this was to run it  as background task. 
 
-However, I considered Celery to be an overhead, reason being that one would have to spin up a Celery worker and a Redis instance for it. I went ahead with a better option of utilizing the package: APScheduler. 
+However, I considered Celery to be an overhead, reason being that one would have to spin up a Celery worker and a Redis instance for it. I went ahead with a better option of utilizing the package: [APScheduler](https://pypi.org/project/APScheduler/). 
 
 This spins up a separate thread away from the main thread, and this can also be configured to run tasks at intervals, as you can see in the code below:
 ```python
