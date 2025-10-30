@@ -36,7 +36,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 1.  **Clone the repository:**
     ```bash
-    git clone <tixxety-test-api_url>
+    git clone https://github.com/Princeigwe/tixxety-test-api.git
     cd tixxety-test-api
     ```
 
@@ -84,8 +84,6 @@ To run the tests for the API:
     ```bash
     docker-compose exec web pytest
     ```
-    *Note: Make sure `pytest` is included in your `requirements.txt` file so it gets installed during the Docker image build process.*
-
 ## Project Structure
 
 The project is organized into modules, each handling a specific domain:
