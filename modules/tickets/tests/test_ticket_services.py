@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi.testclient import TestClient
 
 app = FastAPI()
@@ -98,3 +98,13 @@ def test_reserve_ticket_success():
       assert response.status_code == 200
   
 
+def test_event_ticket_is_available():
+  response = client.post(
+    "/tickets/",
+    headers={"Authorization": mock_bearer_token},
+    json={"event_id": "89efa541-3860-46a8-a8b8-f9fd6760c3a0"}
+  )
+  event_id = "89efa541-3860-46a8-a8b8-f9fd6760c3a0"
+  for event in mock_event_database:
+    if event["id"] == event_id:
+      assert event["tickets_sold"] < event["total_tickets"]
